@@ -19,6 +19,9 @@ const client = new MongoClient(url, {
     useUnifiedTopology: true,
     serverApi: ServerApiVersion.v1, // Add this line
 });
+ 
+const userCollection = client.db('gadgetShop').collection('users')
+const productCollection = client.db('gadgetShop').collection('products')
 
 
 
@@ -28,6 +31,21 @@ async function connectToDatabase() {
     try {
         await client.connect();
         console.log('Connected to MongoDB successfully');
+
+
+// insert user in mongodb
+app.post('/users', async (req,res) => {
+  const user = req.body;
+  const query = {email: user.email};
+  const existingUser = await userCollection.findOne(query);
+  if(existingUser){
+    return res.send({message: "User Already Exist"})
+  };
+  const result = await userCollection.insertOne(user);
+  res.send(result);
+});
+
+
     } catch (err) {
         console.error('Error connecting to MongoDB:', err);
     }

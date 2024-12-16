@@ -33,6 +33,14 @@ async function connectToDatabase() {
         console.log('Connected to MongoDB successfully');
 
 
+// get user
+
+app.get('/user/:email', async (req,res) => {
+  const query = {email: req.params.email};
+  const user = await userCollection.findOne(query);
+  return res.send(user);
+});
+
 // insert user in mongodb
 app.post('/users', async (req,res) => {
   const user = req.body;
